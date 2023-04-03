@@ -1,0 +1,8 @@
+version: "3"
+services:
+  cdex:
+    image: cdex
+    container_name: cdex
+    ports:
+      - 3000:3000
+    restart: unless-stopped

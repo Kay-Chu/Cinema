@@ -1,14 +1,30 @@
 // import '../../style/modules/welcome.css';
 import React from "react";
 import { Typography , Button, Box} from '@mui/material';
-import loading from '../../images/loading.gif';
-import { Link } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import useAuth from "../../hooks/useAuth";
 
 
-const Welcome = () => {
+const Login = () => {
+    const { setAuth } = useAuth();
+
+    const navigate = useNavigate();
+    const location = useLocation();
+    const state = location.state;
+    const from = state?.from?.pathname || "/";
+
+    const handleLogin = (e) => {
+        e.preventDefault();
+        setAuth({
+            username: 'myusername',
+            password: 'mypassword'
+        });
+        navigate(from, { replace: true });
+    }
+
     return (
         
-        <div className="welcome">
+        <div className="login">
             <div className="stars"></div>
             <div className="stars2"></div>
             <div className="stars3"></div>
@@ -33,13 +49,13 @@ const Welcome = () => {
                     justifyContent="center"
                     alignItems="center"
                 >
-                    <Link to="/Home" style={{ textDecoration: 'none' }}>
-                        <Button className="enter-btn" variant="outlined"><span>Enter</span></Button>
-                    </Link>
+                    <div>
+                        <Button onClick={handleLogin} className="enter-btn" variant="outlined"><span>Enter</span></Button>
+                    </div>
                 </Box>
             </div>
         </div>
     );
 };
 
-export { Welcome };
+export { Login };

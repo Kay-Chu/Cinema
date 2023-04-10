@@ -1,8 +1,21 @@
-import { useContext } from "react";
-import AuthContext from "../context/AuthProvider";
+import { useState } from 'react';
 
-const useAuth = () => {
-  return useContext(AuthContext);
-};
+export default function useAuth() {
+  const getAuth = () => {
+    const authString = localStorage.getItem('auth');
+    const userAuth = JSON.parse(authString);
+    return userAuth;
+  };
 
-export default useAuth;
+  const [auth, setAuth] = useState(getAuth());
+
+  const saveAuth = userAuth => {
+    localStorage.setItem('auth', JSON.stringify(userAuth));
+    setAuth(userAuth);
+  };
+
+  return {
+    setAuth: saveAuth,
+    auth
+  }
+}

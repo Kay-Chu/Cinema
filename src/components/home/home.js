@@ -1,15 +1,17 @@
 import React from "react";
-import { Tile } from "./tile";
-import { Search } from "./search";
-import { Library } from "./library";
+import { Grid, Button } from '@mui/material';
+import Search from "./search";
+import Featured from "./featured";
+import Library from "./library";
 import { Content } from "./content";
-import { Grid, Stack, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import axios from '../../api/axios';
 import useAuth from "../../hooks/useAuth";
 // import mariadb from 'mariadb';
 import { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Home = () => {
+    
 
     // const pool = mariadb.createPool({
     //     host: 'code.kaying.site',
@@ -18,8 +20,17 @@ const Home = () => {
     //     connectionLimit: 5
     // });
 
+    const navigate = useNavigate();
+
+    const handleLogout = (e) => {
+        e.preventDefault();
+        localStorage.removeItem('auth');
+        navigate('/login', { replace: true });
+    }
+
     const { auth, setAuth } = useAuth();
 
+    const [keyword, setKeyword] = useState("");
     const [movies, setMovies] = React.useState([
         {
             imdbID:"tt9850370",
@@ -112,41 +123,25 @@ const Home = () => {
 
     useEffect(() => {
         // getMovie('batman','us')
-        setAuth({});
-        console.log(!auth.isLoggedIn);
     }, []);
 
     return (
         <div className="home">
-
-            <Search />
-
-            <div className="featured">
-                <div className="genre">
-                    <FormControl fullWidth>
-                    <InputLabel id="genre-select-label">Genre</InputLabel>
-                    <Select
-                        labelId="genre-select-label"
-                        id="genre-select"
-                        value={878}
-                        label="Sci-Fi"
-                    >
-                        <MenuItem value={10}>Ten</MenuItem>
-                        <MenuItem value={20}>Twenty</MenuItem>
-                        <MenuItem value={30}>Thirty</MenuItem>
-                    </Select>
-                    </FormControl>
-                </div>
-                <div className="movie">
-                    {/* <ImageList sx={{ overflowX: 'auto', width: 500, height: 340 }} > */}
-                        <Stack sx={{ overflowX: 'auto', overflowY: 'hidden', width: '70vw', height: 300 }} direction="row" spacing={2}>
-                            {movies.map((movie)=>(<Tile movie={movie} />))}
-                        </Stack>
-                    {/* </ImageList> */}
-                </div>
-
-            </div>
-            <Library />
+            <Grid container spacing={2}>
+                <Grid item md={12}>
+                    <Search keyword={keyword} setKeyword={setKeyword}/>
+                </Grid>
+                <Grid item md={12}>
+                    <Featured movies={movies} />
+                </Grid>
+                <Grid item md={12}>
+                    <h1>{keyword}</h1>
+                    <Library />
+                </Grid>
+                <Grid item md={12}>
+                    <Button onClick={handleLogout} className="logout-btn" variant="outlined"><span>Logout</span></Button>
+                </Grid>
+            </Grid>
 
         </div>
     );

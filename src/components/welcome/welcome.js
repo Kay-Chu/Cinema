@@ -26,7 +26,7 @@ const Welcome = () => {
                     justifyContent="center"
                     alignItems="center"
                 >
-                    <img src={ loading } alt="loading" className="loading-gif" width="100px" height="100px"/>
+                    {/* <img src={ loading } alt="loading" className="loading-gif" width="100px" height="100px"/> */}
                 </Box>
                 <Box
                     display="flex"

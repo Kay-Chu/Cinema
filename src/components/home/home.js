@@ -1,14 +1,24 @@
 import React from "react";
 import { Tile } from "./tile";
+import { Search } from "./search";
+import { Library } from "./library";
 import { Content } from "./content";
-import { Grid } from '@mui/material';
-import axios from 'axios';
-import ImageList from '@mui/material/ImageList';
-import Stack from '@mui/material/Stack';
+import { Grid, Stack, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import axios from '../../api/axios';
+import useAuth from "../../hooks/useAuth";
+// import mariadb from 'mariadb';
 import { useState, useEffect } from 'react';
 
 const Home = () => {
 
+    // const pool = mariadb.createPool({
+    //     host: 'code.kaying.site',
+    //     user: 'cinema',
+    //     password: 'wPMqYR',
+    //     connectionLimit: 5
+    // });
+
+    const { auth, setAuth } = useAuth();
 
     const [movies, setMovies] = React.useState([
         {
@@ -80,44 +90,63 @@ const Home = () => {
 
 
     function getMovie(search_title, country_code) {
-        console.log("exec once")
-            const options = {
-                method: 'GET',
-                url: 'https://streaming-availability.p.rapidapi.com/search/basic',
-                params: {
-                  country: 'us',
-                  service: 'netflix',
-                  type: 'movie',
-                  genre: '878'
-                },
-                headers: {
-                    'X-RapidAPI-Key': '23e7de4453mshb034b7870fedc6bp18739fjsn4e8925f0ee59',
-                    'X-RapidAPI-Host': 'streaming-availability.p.rapidapi.com'
-                }
-            };
+        console.log("exec once");
+        const options = {
+            method: 'GET',
+            url: 'search/basic',
+            params: {   
+                country: 'us',
+                service: 'netflix',
+                type: 'movie',
+                genre: '878'
+            }
+        };
 
-            axios.request(options).then(function (response) {
-                setMovies(response.data.results);
-                console.log("movies");
-            }).catch(function (error) {
-                console.error(error);
-            });
+        axios.request(options).then(function (response) {
+            setMovies(response.data.result == undefined ? response.data.results : response.data.result);
+            console.log("movies");
+        }).catch(function (error) {
+            console.error(error);
+        });
     }
 
     useEffect(() => {
         // getMovie('batman','us')
+        setAuth({});
+        console.log(!auth.isLoggedIn);
     }, []);
 
     return (
         <div className="home">
 
-            <div className="movie">
-                {/* <ImageList sx={{ overflowX: 'auto', width: 500, height: 340 }} > */}
-                    <Stack sx={{ overflowX: 'auto', overflowY: 'hidden', width: '70vw', height: 340 }} direction="row" spacing={2}>
-                        {movies.map((movie)=>(<Tile movie={movie} />))}
-                    </Stack>
-                {/* </ImageList> */}
+            <Search />
+
+            <div className="featured">
+                <div className="genre">
+                    <FormControl fullWidth>
+                    <InputLabel id="genre-select-label">Genre</InputLabel>
+                    <Select
+                        labelId="genre-select-label"
+                        id="genre-select"
+                        value={878}
+                        label="Sci-Fi"
+                    >
+                        <MenuItem value={10}>Ten</MenuItem>
+                        <MenuItem value={20}>Twenty</MenuItem>
+                        <MenuItem value={30}>Thirty</MenuItem>
+                    </Select>
+                    </FormControl>
+                </div>
+                <div className="movie">
+                    {/* <ImageList sx={{ overflowX: 'auto', width: 500, height: 340 }} > */}
+                        <Stack sx={{ overflowX: 'auto', overflowY: 'hidden', width: '70vw', height: 300 }} direction="row" spacing={2}>
+                            {movies.map((movie)=>(<Tile movie={movie} />))}
+                        </Stack>
+                    {/* </ImageList> */}
+                </div>
+
             </div>
+            <Library />
 
         </div>
     );

@@ -1,12 +1,17 @@
 // import '../../style/modules/welcome.css';
-import React from "react";
-import { Typography , Button, Box} from '@mui/material';
+import React, { useState } from "react";
+import { Typography , Button, Box, Stack, TextField} from '@mui/material';
 import { useLocation, useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
+import axios from "../../api/axios";
 
 
 const Login = () => {
     const { setAuth } = useAuth();
+    const [username, setUsername] = useState();
+    const [password, setPassword] = useState();
+    const [usernameError, setUsernameError] = useState(false);
+    const [passwordError, setPasswordError] = useState(false);
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -15,11 +20,32 @@ const Login = () => {
 
     const handleLogin = (e) => {
         e.preventDefault();
-        setAuth({
-            username: 'myusername',
-            password: 'mypassword'
+        setUsernameError(false);
+        setPasswordError(false);
+        const options = {
+            method: 'POST',
+            url: 'login',
+            data: {   
+                username: username,
+                password: password
+            }
+        };
+        axios.request(options).then(function (response) {
+            if (!response.data.userExists) {
+                setUsernameError(true);
+            } else if (!response.data.passwordMatch) {
+                setPasswordError(true);
+            } else {
+                setAuth({
+                    id: response.data.id,
+                    username: response.data.username,
+                    token: response.data.token
+                });
+                navigate(from, { replace: true });
+            }
+        }).catch(function (error) {
+            console.error(error);
         });
-        navigate(from, { replace: true });
     }
 
     return (
@@ -42,7 +68,36 @@ const Login = () => {
                     justifyContent="center"
                     alignItems="center"
                 >
-                    {/* <img src={ loading } alt="loading" className="loading-gif" width="100px" height="100px"/> */}
+                    {/* <InputLabel className="login-label" >Login</InputLabel> */}
+                    <Stack className="grid-container" spacing={2}>
+                        <TextField
+                            className="username-input"
+                            id="username-input"
+                            label="Username"
+                            variant="outlined"
+                            value={username}
+                            placeholder="Username"
+                            error={usernameError}
+                            helperText={usernameError ? "Username does not Exist!" : ""}
+                            onChange={(event) => {
+                            setUsername(event.target.value);
+                            }}
+                        />
+                        <TextField
+                            className="password-input"
+                            id="password-input"
+                            label="Password"
+                            variant="outlined"
+                            value={password}
+                            placeholder="Password"
+                            error={passwordError}
+                            helperText={passwordError ? "Password Incorrect!" : ""}
+                            type="password"
+                            onChange={(event) => {
+                            setPassword(event.target.value);
+                            }}
+                        />
+                    </Stack>
                 </Box>
                 <Box
                     display="flex"

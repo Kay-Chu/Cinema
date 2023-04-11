@@ -3,23 +3,12 @@ import { Grid, Button } from '@mui/material';
 import Search from "./search";
 import Featured from "./featured";
 import Library from "./library";
-import { Content } from "./content";
-import axios from '../../api/axios';
 import useAuth from "../../hooks/useAuth";
-// import mariadb from 'mariadb';
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from "react-router-dom";
 
 const Home = () => {
     
-
-    // const pool = mariadb.createPool({
-    //     host: 'code.kaying.site',
-    //     user: 'cinema',
-    //     password: 'wPMqYR',
-    //     connectionLimit: 5
-    // });
-
     const navigate = useNavigate();
 
     const handleLogout = (e) => {
@@ -101,24 +90,7 @@ const Home = () => {
 
 
     function getMovie(search_title, country_code) {
-        console.log("exec once");
-        const options = {
-            method: 'GET',
-            url: 'search/basic',
-            params: {   
-                country: 'us',
-                service: 'netflix',
-                type: 'movie',
-                genre: '878'
-            }
-        };
 
-        axios.request(options).then(function (response) {
-            setMovies(response.data.result == undefined ? response.data.results : response.data.result);
-            console.log("movies");
-        }).catch(function (error) {
-            console.error(error);
-        });
     }
 
     useEffect(() => {

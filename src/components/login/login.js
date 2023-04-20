@@ -1,9 +1,10 @@
 // import '../../style/modules/welcome.css';
-import React, { useState } from "react";
-import { Typography , Button, Box, Stack, TextField} from '@mui/material';
+import React, { useState, useEffect } from "react";
+import { Grid, Typography , Button, Box, Stack, TextField} from '@mui/material';
 import { useLocation, useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import axios from "../../api/axios";
+import Featured from "./featured.js";
 
 
 const Login = () => {
@@ -47,6 +48,23 @@ const Login = () => {
             console.error(error);
         });
     }
+    const [movies, setMovies] = React.useState([]);
+
+    function getFeaturedMovie() {
+        const options = {
+            method: 'GET',
+            url: 'featured'
+        };
+        axios.request(options).then(function (response) {
+            setMovies(response.data);
+        }).catch(function (error) {
+            console.error(error);
+        });
+    }
+
+    useEffect(() => {
+        getFeaturedMovie();
+    }, []);
 
     return (
         
@@ -56,58 +74,74 @@ const Login = () => {
             <div className="stars3"></div>
             <div className="content">
                 
-                <Box
-                    display="flex"
-                    justifyContent="center"
-                    alignItems="center"
-                >
-                    <Typography align="center" className="welcome-text" ><span>WELCOME</span></Typography>
-                </Box>
-                <Box
-                    display="flex"
-                    justifyContent="center"
-                    alignItems="center"
-                >
-                    {/* <InputLabel className="login-label" >Login</InputLabel> */}
-                    <Stack className="grid-container" spacing={2}>
-                        <TextField
-                            className="username-input"
-                            id="username-input"
-                            label="Username"
-                            variant="outlined"
-                            value={username}
-                            placeholder="Username"
-                            error={usernameError}
-                            helperText={usernameError ? "Username does not Exist!" : ""}
-                            onChange={(event) => {
-                            setUsername(event.target.value);
-                            }}
-                        />
-                        <TextField
-                            className="password-input"
-                            id="password-input"
-                            label="Password"
-                            variant="outlined"
-                            value={password}
-                            placeholder="Password"
-                            error={passwordError}
-                            helperText={passwordError ? "Password Incorrect!" : ""}
-                            type="password"
-                            onChange={(event) => {
-                            setPassword(event.target.value);
-                            }}
-                        />
-                    </Stack>
-                </Box>
-                <Box
-                    display="flex"
-                    justifyContent="center"
-                    alignItems="center"
-                >
-                    <div>
-                        <Button onClick={handleLogin} className="enter-btn" variant="outlined"><span>Enter</span></Button>
-                    </div>
-                </Box>
+                <Grid container spacing={2}>
+                    <Grid item md={8}>
+                        <Box
+                            display="flex"
+                            justifyContent="center"
+                            alignItems="center"
+                        >
+                            <Featured movies={movies}/>
+                        </Box>
+                    </Grid>
+                    <Grid item md={4}>
+                        <Box
+                            display="flex"
+                            justifyContent="center"
+                            alignItems="center"
+                        >
+                            <Typography align="center" className="welcome-text" ><span>WELCOME</span></Typography>
+                        </Box>
+                        <Box
+                            display="flex"
+                            justifyContent="center"
+                            alignItems="center"
+                        >
+                            <Stack className="grid-container" spacing={2}>
+                            
+                                <TextField 
+                                    className= "username-input"
+                                    id="username-input"
+                                    label="Username"
+                                    variant="outlined"
+                                    value={username}
+                                    placeholder="Username"
+                                    error={usernameError}
+                                    helperText={usernameError ? "Username does not Exist!" : ""}
+                                    onChange={(event) => {
+                                        setUsername(event.target.value);
+                                    }}
+                                />
+                                <TextField
+                                    className="password-input"
+                                    id="password-input"
+                                    label="Password"
+                                    variant="outlined"
+                                    value={password}
+                                    placeholder="Password"
+                                    error={passwordError}
+                                    helperText={passwordError ? "Password Incorrect!" : ""}
+                                    type="password"
+                                    onChange={(event) => {
+                                    setPassword(event.target.value);
+                                    }}
+                                />
+
+                            
+                            </Stack>
+
+                        </Box>
+                        <Box
+                            display="flex"
+                            justifyContent="center"
+                            alignItems="center"
+                        >
+                            <div>
+                                <Button onClick={handleLogin} className="enter-btn" variant="outlined"><span>Enter</span></Button>
+                            </div>
+                        </Box>
+                    </Grid>
+                </Grid>
             </div>
         </div>
     );

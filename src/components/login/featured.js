@@ -1,13 +1,13 @@
 import React from "react";
 import { Stack, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
-import { Tile } from "./tile";
+import { Tile } from "../home/tile";
 
 const Featured = ({movies}) => {
 
     return (
         <div className="featured">
             <div className="genre">
-                <FormControl fullWidth>
+                {/* <FormControl fullWidth>
                 <InputLabel id="genre-select-label">Genre</InputLabel>
                 <Select
                     labelId="genre-select-label"
@@ -19,7 +19,7 @@ const Featured = ({movies}) => {
                     <MenuItem value={20}>Twenty</MenuItem>
                     <MenuItem value={30}>Thirty</MenuItem>
                 </Select>
-                </FormControl>
+                </FormControl> */}
             </div>
             <div className="movie">
                 {/* <ImageList sx={{ overflowX: 'auto', width: 500, height: 340 }} > */}
